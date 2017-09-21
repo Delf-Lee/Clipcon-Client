@@ -14,52 +14,46 @@ import model.message.Message;
 import server.Endpoint;
 
 public class GroupExitDialog extends Dialog {
-	
+
 	private Endpoint endpoint = Endpoint.getInstance();
- 
-    public GroupExitDialog(String msg) {
-    	super(msg);
- 
-        Button yesBtn = new Button("Yes");
-        yesBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-                GroupExitDialog.this.close();
-                
+
+	public GroupExitDialog(String msg) {
+		super(msg);
+
+		Button yesBtn = new Button("Yes");
+		yesBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent event) {
+				GroupExitDialog.this.close();
+
 				// Send REQUEST_EXIT_GROUP Message To Server
 				Message exitGroupMsg = new Message().setType(Message.REQUEST_EXIT_GROUP);
-				try {
-					endpoint.sendMessage(exitGroupMsg);
-				} catch (IOException | EncodeException e) {
-					e.printStackTrace();
-				}
+				endpoint.sendMessage(exitGroupMsg);
 			}
 		});
-        
-        yesBtn.getStyleClass().add("button");
-        
-        Button noBtn = new Button("No");
-        noBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-                GroupExitDialog.this.close();
+
+		yesBtn.getStyleClass().add("button");
+
+		Button noBtn = new Button("No");
+		noBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override public void handle(ActionEvent event) {
+				GroupExitDialog.this.close();
 			}
 		});
-        
-        noBtn.getStyleClass().add("button");
- 
-        hbox.setAlignment(Pos.CENTER);
-        hbox.getChildren().add(yesBtn);
-        hbox.setAlignment(Pos.CENTER);
-        hbox.getChildren().add(noBtn);
- 
-        dropShadowPane.setBottom(hbox);
- 
-        borderPane.setCenter(dropShadowPane);
- 
-        Scene scene = new Scene(borderPane);                       
-        scene.getStylesheets().add("resources/myAlert.css");
-        scene.setFill(Color.TRANSPARENT);
-        setScene(scene);
-    }
+
+		noBtn.getStyleClass().add("button");
+
+		hbox.setAlignment(Pos.CENTER);
+		hbox.getChildren().add(yesBtn);
+		hbox.setAlignment(Pos.CENTER);
+		hbox.getChildren().add(noBtn);
+
+		dropShadowPane.setBottom(hbox);
+
+		borderPane.setCenter(dropShadowPane);
+
+		Scene scene = new Scene(borderPane);
+		scene.getStylesheets().add("resources/myAlert.css");
+		scene.setFill(Color.TRANSPARENT);
+		setScene(scene);
+	}
 }

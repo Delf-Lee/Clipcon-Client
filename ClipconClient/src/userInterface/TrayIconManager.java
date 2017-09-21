@@ -35,7 +35,7 @@ public class TrayIconManager {
 
 	private ActionListener closeListener;
 	private ActionListener showListener;
-	
+
 	private Endpoint endpoint = Endpoint.getInstance();
 
 	public TrayIconManager() {
@@ -61,7 +61,8 @@ public class TrayIconManager {
 				e.printStackTrace();
 			}
 
-		} else {
+		}
+		else {
 			System.err.println("Tray unavailable");
 		}
 	}
@@ -71,28 +72,21 @@ public class TrayIconManager {
 
 		// create a action listener to listen for default action executed on the tray icon
 		closeListener = new ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent e) {
+			@Override public void actionPerformed(java.awt.event.ActionEvent e) {
 				Message exitProgramMsg = new Message().setType(Message.REQUEST_EXIT_PROGRAM);
-				try {
-					endpoint.sendMessage(exitProgramMsg);
-				} catch (IOException | EncodeException e1) {
-					e1.printStackTrace();
-				}
+				endpoint.sendMessage(exitProgramMsg);
 				System.exit(0);
 			}
 		};
 
 		showListener = new ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent e) {
+			@Override public void actionPerformed(java.awt.event.ActionEvent e) {
 				Platform.runLater(() -> {
 					Main.getPrimaryStage().show();
 				});
 			}
 		};
 
-		
 		/* Tray Icon Mouse Listener */
 		mouseListener = new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -111,10 +105,10 @@ public class TrayIconManager {
 		menuItem.addActionListener(closeListener);
 
 		trayIconMenu.add(menuItem);
-		
+
 		menuItem = new MenuItem("Show App"); // show program
 		menuItem.addActionListener(showListener);
-		
+
 		trayIconMenu.add(menuItem);
 	}
 }

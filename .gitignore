@@ -1,4 +1,4 @@
-### Eclipse ###
+# Eclipse ###
 *.pydevproject
 .metadata
 .gradle
@@ -55,3 +55,6 @@ hs_err_pid*
 # clipcon configuration files
 *.lock
 *.fxbuild
+
+# clipcon setup file
+*.exe

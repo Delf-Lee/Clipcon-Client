@@ -32,9 +32,11 @@ public class Main extends Application {
 	private static Stage primaryStage;
 
 	public static final String SERVER_PORT = "80";
-	public static final String SERVER_ADDR = "113.198.84.53";
+	public static final String SERVER_ADDR = "113.198.84.53"; // Main Server ip
+	// public static final String SERVER_ADDR = "223.194.156.74"; // Sub Server ip
 	// public static final String SERVER_ADDR = "delf.gonetis.com";
-	// public static final String SERVER_ADDR = "223.194.156.74";
+
+	// public static final String SERVER_ADDR = "delf.gonetis.com";
 
 	public static final String SERVER_URI_PART = SERVER_ADDR + ":" + SERVER_PORT + "/";
 
@@ -49,8 +51,7 @@ public class Main extends Application {
 
 	private static HostServices hostService;
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+	@Override public void start(Stage primaryStage) throws Exception {
 
 		hostService = getHostServices();
 
@@ -58,11 +59,7 @@ public class Main extends Application {
 		Message confirmVersionMsg = new Message().setType(Message.REQUEST_CONFIRM_VERSION);
 		confirmVersionMsg.add(Message.CLIPCON_VERSION, CLIPCON_VERSION);
 
-		try {
-			endpoint.sendMessage(confirmVersionMsg);
-		} catch (IOException | EncodeException e) {
-			e.printStackTrace();
-		}
+		endpoint.sendMessage(confirmVersionMsg);
 		try {
 			System.load(System.getProperty("user.dir") + File.separator + "keyHooking.dll");
 		} catch (UnsatisfiedLinkError e) {
@@ -94,19 +91,14 @@ public class Main extends Application {
 				}
 				else {
 					Message exitProgramMsg = new Message().setType(Message.REQUEST_EXIT_PROGRAM);
-					try {
-						endpoint.sendMessage(exitProgramMsg);
-					} catch (IOException | EncodeException e) {
-						e.printStackTrace();
-					}
+					endpoint.sendMessage(exitProgramMsg);
 					System.exit(0);
 				}
 			}
 		});
 
 		Thread clipboardMonitorThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
+			@Override public void run() {
 				ClipboardController.clipboardMonitor();
 			}
 		});
@@ -125,8 +117,7 @@ public class Main extends Application {
 		return Main.hostService;
 	}
 
-	@SuppressWarnings("resource")
-	public static void fileLock() throws FileNotFoundException {
+	@SuppressWarnings("resource") public static void fileLock() throws FileNotFoundException {
 		lockFile = new File(Main.LOCK_FILE_LOCATION);
 
 		FileChannel channel;
@@ -150,8 +141,9 @@ public class Main extends Application {
 		try {
 			fileLock();
 			launch(args);
-		} catch (FileNotFoundException e) {
-			runCommandAsAdmin("\"" + System.getProperty("user.dir") + File.separator + "ClipCon.exe" + "\"");
+		} catch (FileNotFoundException e) { // (1)
+			System.out.println(System.getProperty("user.dir") + File.separator + "ClipCon.exe");
+			runCommandAsAdmin("\"" + System.getProperty("user.dir") + File.separator + "ClipCon.exe" + "\""); // 이러면되나
 			System.exit(0);
 		}
 	}

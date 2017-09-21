@@ -10,6 +10,7 @@ import lombok.Setter;
 public class User {
 	private String name;
 	private Group group;
+	private String session;
 	
     private StringProperty nameProperty;
 	

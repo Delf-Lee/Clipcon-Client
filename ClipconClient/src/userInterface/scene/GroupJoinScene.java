@@ -26,48 +26,48 @@ import userInterface.UserInterface;
 import userInterface.dialog.Dialog;
 import userInterface.dialog.PlainDialog;
 
-public class GroupJoinScene implements Initializable{
+public class GroupJoinScene implements Initializable {
 
 	private UserInterface ui = UserInterface.getInstance();
 
-	@FXML private TextField groupKey;
-	@FXML private Button confirmBtn, XBtn;
-	
+	@FXML
+	private TextField groupKey;
+	@FXML
+	private Button confirmBtn, XBtn;
+
 	private Dialog dialog;
-	
+
 	private Endpoint endpoint = Endpoint.getInstance();
-	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+
+	@Override public void initialize(URL location, ResourceBundle resources) {
 		ui.setGroupJoinScene(this);
-		
+
 		groupKey.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				if(event.getCode().equals(KeyCode.ENTER)) {
-					if(groupKey.getText().length() == 0) {
+			@Override public void handle(KeyEvent event) {
+				if (event.getCode().equals(KeyCode.ENTER)) {
+					if (groupKey.getText().length() == 0) {
 						notInputGroupKey();
-					} else {
+					}
+					else {
 						sendGroupJoinMessage();
 					}
 				}
 			}
 		});
-		
+
 		confirmBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if(groupKey.getText().length() == 0) {
+			@Override public void handle(ActionEvent event) {
+				if (groupKey.getText().length() == 0) {
 					notInputGroupKey();
-				} else {
+				}
+				else {
 					sendGroupJoinMessage();
 				}
 			}
 		});
-		
+
 		XBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
+			@Override public void handle(ActionEvent event) {
 				try {
 					Parent goBack = FXMLLoader.load(getClass().getResource("/view/StartingView.fxml"));
 					Scene scene = new Scene(goBack);
@@ -81,44 +81,40 @@ public class GroupJoinScene implements Initializable{
 			}
 		});
 	}
-	
+
 	public void notInputGroupKey() {
-		dialog = new PlainDialog("Group key ¸¦ ÀÔ·ÂÇÏ¼¼¿ä.", false);
+		dialog = new PlainDialog("Group key ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.", false);
 		dialog.showAndWait();
 	}
-	
+
 	// send REQUEST_JOIN_GROUP Messgae to server
 	public void sendGroupJoinMessage() {
 		if (groupKey.getText().length() != 0) {
-			
+
 			Message signUpMsg = new Message().setType(Message.REQUEST_JOIN_GROUP);
 			signUpMsg.add(Message.GROUP_PK, groupKey.getText());
-			try {
-				endpoint.sendMessage(signUpMsg);
-			} catch (IOException | EncodeException e) {
-				e.printStackTrace();
-			}
+			endpoint.sendMessage(signUpMsg);
 		}
 	}
-	
+
 	public void failGroupJoin() {
 		Platform.runLater(() -> {
-			dialog = new PlainDialog("À¯È¿ÇÏÁö ¾Ê´Â Group Key ÀÔ´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇÏ¼¼¿ä.", false);
+			dialog = new PlainDialog("ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ Group Key ï¿½Ô´Ï´ï¿½. ï¿½Ù½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.", false);
 			dialog.showAndWait();
 			groupKey.setText("");
 		});
 	}
-	
+
 	public void showMainView() {
 		Platform.runLater(() -> {
 			try {
 				Parent toMain = FXMLLoader.load(getClass().getResource("/view/MainView.fxml"));
 				Scene mainScene = new Scene(toMain);
 				Stage primaryStage = Main.getPrimaryStage();
-				
+
 				primaryStage.setScene(mainScene);
 				primaryStage.show();
-	
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -59,15 +59,24 @@ public class Endpoint {
 		new PingPong().start();
 	}
 
-	@OnOpen
-	public void onOpen(Session session) {
+	@OnOpen public void onOpen(Session session) {
 		this.session = session;
+
+		// send hello message: sesion id information
+		Message hello = new Message().setType(Message.HELLO);
+		hello.add(Message.SERVERMSG, session.getId());
+		sendMessage(hello);
 	}
 
-	@OnMessage
-	public void onMessage(Message message) {
+	@OnMessage public void onMessage(Message message) {
 		System.out.println("message type: " + message.get(Message.TYPE) + " - " + Main.getTime());
 		switch (message.get(Message.TYPE)) {
+
+		case Message.HELLO:
+			String serverSssion = message.get(Message.SESSION);
+			user.setSession(serverSssion);
+			break;
+
 		case Message.RESPONSE_CONFIRM_VERSION:
 			switch (message.get(Message.RESULT)) {
 			case Message.REJECT:
@@ -101,7 +110,7 @@ public class Endpoint {
 			switch (message.get(Message.RESULT)) {
 			case Message.CONFIRM:
 				String changeName = message.get(Message.CHANGE_NAME);
-				
+
 				System.out.println("changeName : " + changeName);
 
 				user.setName(changeName);
@@ -190,10 +199,10 @@ public class Endpoint {
 			ui.getMainScene().addContentsInHistory(); // update UI list
 
 			break;
-			
+
 		case Message.PONG:
 			break;
-			
+
 		case Message.SERVERMSG:
 			String msg = message.get(Message.CONTENTS);
 			Platform.runLater(() -> {
@@ -201,28 +210,32 @@ public class Endpoint {
 				plainDialog.showAndWait();
 			});
 			break;
-			
+
 		default:
 			break;
 		}
 	}
 
-	public void sendMessage(Message message) throws IOException, EncodeException {
-		session.getBasicRemote().sendObject(message);
+	public void sendMessage(Message message) {
+		try {
+			session.getBasicRemote().sendObject(message);
+		} catch (IOException e) {
+			System.err.println(getClass().getName() + ". error at sending message. " + e.getMessage());
+		} catch (EncodeException e) {
+			System.err.println(getClass().getName() + ". error at sending message. " + e.getMessage());
+		}
 	}
 
-	@OnClose
-	public void onClose() {
+	@OnClose public void onClose() {
 		System.out.println("[on Close]");
 		Platform.runLater(() -> {
-			dialog = new PlainDialog("¼­¹ö¿ÍÀÇ ¿¬°áÀÌ ²÷°å½À´Ï´Ù.", true);
+			dialog = new PlainDialog("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.", true);
 			dialog.showAndWait();
 		});
 	}
 
 	class PingPong extends Thread {
-		@Override
-		public void run() {
+		@Override public void run() {
 			while (true) {
 				try {
 					Thread.sleep(3 * 60 * 1000);
@@ -230,10 +243,6 @@ public class Endpoint {
 
 				} catch (InterruptedException e) {
 					System.out.println("[ERROR] Pingping thread - InterruptedException");
-				} catch (IOException e) {
-					System.out.println("[ERROR] Pingping thread - IOException");
-				} catch (EncodeException e) {
-					System.out.println("[ERROR] Pingping thread - EncodeException");
 				}
 			}
 		}
