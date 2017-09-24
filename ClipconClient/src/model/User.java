@@ -11,9 +11,12 @@ public class User {
 	private String name;
 	private Group group;
 	private String session;
-	
-    private StringProperty nameProperty;
-	
+
+	private StringProperty nameProperty;
+
+	public User() {
+	}
+
 	public User(String name) {
 		this.name = name;
 		group = null;

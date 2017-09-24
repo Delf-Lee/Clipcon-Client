@@ -13,6 +13,7 @@ import javax.websocket.EncodeException;
 
 import ClipboardManager.ClipboardController;
 import authority.Elevator;
+import impl.org.controlsfx.skin.GridCellSkin;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -31,12 +32,12 @@ import userInterface.dialog.PlainDialog;
 public class Main extends Application {
 	private static Stage primaryStage;
 
-	public static final String SERVER_PORT = "80";
-	public static final String SERVER_ADDR = "113.198.84.53"; // Main Server ip
+	public static final String SERVER_PORT = "8080";
+	// public static final String SERVER_ADDR = "113.198.84.53"; // Main Server ip
 	// public static final String SERVER_ADDR = "223.194.156.74"; // Sub Server ip
 	// public static final String SERVER_ADDR = "delf.gonetis.com";
 
-	// public static final String SERVER_ADDR = "delf.gonetis.com";
+	public static final String SERVER_ADDR = "delf.gonetis.com";
 
 	public static final String SERVER_URI_PART = SERVER_ADDR + ":" + SERVER_PORT + "/";
 
@@ -51,15 +52,13 @@ public class Main extends Application {
 
 	private static HostServices hostService;
 
-	@Override public void start(Stage primaryStage) throws Exception {
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		// version check
+		versionCheck();
 
 		hostService = getHostServices();
 
-		// version check
-		Message confirmVersionMsg = new Message().setType(Message.REQUEST_CONFIRM_VERSION);
-		confirmVersionMsg.add(Message.CLIPCON_VERSION, CLIPCON_VERSION);
-
-		endpoint.sendMessage(confirmVersionMsg);
 		try {
 			System.load(System.getProperty("user.dir") + File.separator + "keyHooking.dll");
 		} catch (UnsatisfiedLinkError e) {
@@ -88,8 +87,7 @@ public class Main extends Application {
 			public void handle(WindowEvent t) {
 				if (isInMainScene) {
 					Platform.setImplicitExit(false);
-				}
-				else {
+				} else {
 					Message exitProgramMsg = new Message().setType(Message.REQUEST_EXIT_PROGRAM);
 					endpoint.sendMessage(exitProgramMsg);
 					System.exit(0);
@@ -98,7 +96,8 @@ public class Main extends Application {
 		});
 
 		Thread clipboardMonitorThread = new Thread(new Runnable() {
-			@Override public void run() {
+			@Override
+			public void run() {
 				ClipboardController.clipboardMonitor();
 			}
 		});
@@ -117,7 +116,8 @@ public class Main extends Application {
 		return Main.hostService;
 	}
 
-	@SuppressWarnings("resource") public static void fileLock() throws FileNotFoundException {
+	@SuppressWarnings("resource")
+	public static void fileLock() throws FileNotFoundException {
 		lockFile = new File(Main.LOCK_FILE_LOCATION);
 
 		FileChannel channel;
@@ -164,4 +164,11 @@ public class Main extends Application {
 	public static void runCommandAsAdmin(String command) {
 		Elevator.executeAsAdmin("c:\\windows\\system32\\cmd.exe", "/C " + command);
 	}
+
+	public void versionCheck() {
+		Message confirmVersionMsg = new Message().setType(Message.REQUEST_CONFIRM_VERSION);
+		confirmVersionMsg.add(Message.CLIPCON_VERSION, CLIPCON_VERSION);
+		endpoint.sendMessage(confirmVersionMsg);
+	}
+
 }

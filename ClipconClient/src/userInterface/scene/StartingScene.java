@@ -38,7 +38,6 @@ public class StartingScene implements Initializable {
 
 				// send REQUEST_REQUEST_CREATE_GROUP Messgae to server
 				Message createGroupMsg = new Message().setType(Message.REQUEST_CREATE_GROUP);
-				createGroupMsg.add(Message.SESSION, Endpoint.user.getSession());
 				endpoint.sendMessage(createGroupMsg);
 			}
 		});

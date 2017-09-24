@@ -16,6 +16,7 @@ import javax.websocket.Session;
 import application.Main;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import lombok.Getter;
 import model.Contents;
 import model.User;
 import model.message.Message;
@@ -33,6 +34,7 @@ public class Endpoint {
 	private final String CONTEXT_ROOT = "globalclipboard/ServerEndpoint";
 	private final String uri = PROTOCOL + Main.SERVER_URI_PART + CONTEXT_ROOT;
 
+	@Getter
 	private Session session = null;
 	private static Endpoint uniqueEndpoint;
 	private static UserInterface ui;
@@ -59,22 +61,17 @@ public class Endpoint {
 		new PingPong().start();
 	}
 
-	@OnOpen public void onOpen(Session session) {
+	@OnOpen
+	public void onOpen(Session session) {
 		this.session = session;
-
-		// send hello message: sesion id information
-		Message hello = new Message().setType(Message.HELLO);
-		hello.add(Message.SERVERMSG, session.getId());
-		sendMessage(hello);
 	}
 
-	@OnMessage public void onMessage(Message message) {
+	@OnMessage
+	public void onMessage(Message message) {
 		System.out.println("message type: " + message.get(Message.TYPE) + " - " + Main.getTime());
 		switch (message.get(Message.TYPE)) {
 
 		case Message.HELLO:
-			String serverSssion = message.get(Message.SESSION);
-			user.setSession(serverSssion);
 			break;
 
 		case Message.RESPONSE_CONFIRM_VERSION:
@@ -93,7 +90,6 @@ public class Endpoint {
 			case Message.CONFIRM:
 				ui.getStartingScene().showMainView(); // Show MainView
 				user = MessageParser.getUserAndGroupByMessage(message); // create Group Object using primaryKey, name(get from server) and set to user
-
 				while (true) {
 					if (ui.getMainScene() != null && user != null) {
 						break;
@@ -128,7 +124,9 @@ public class Endpoint {
 			case Message.CONFIRM:
 				ui.getGroupJoinScene().showMainView(); // close group join and show MainView
 				user = MessageParser.getUserAndGroupByMessage(message); // create Group Object using primaryKey, name(get from server) and set to user
-
+				if (user == null) {
+					System.out.println("   [delflog] user is null 0216 - " + this.getClass());
+				}
 				while (true) {
 					if (ui.getMainScene() != null && user != null) {
 						break;
@@ -158,7 +156,6 @@ public class Endpoint {
 
 		case Message.NOTI_ADD_PARTICIPANT: // receive a message when another user enters the group and updates the UI
 			User newParticipant = new User(message.get(Message.PARTICIPANT_NAME));
-
 			user.getGroup().getUserList().add(newParticipant);
 			ui.getMainScene().getGroupParticipantList().add(newParticipant);
 			ui.getMainScene().addGroupParticipantList(); // update UI list
@@ -218,6 +215,7 @@ public class Endpoint {
 
 	public void sendMessage(Message message) {
 		try {
+			System.out.println("@messag: " + message);
 			session.getBasicRemote().sendObject(message);
 		} catch (IOException e) {
 			System.err.println(getClass().getName() + ". error at sending message. " + e.getMessage());
@@ -226,7 +224,8 @@ public class Endpoint {
 		}
 	}
 
-	@OnClose public void onClose() {
+	@OnClose
+	public void onClose() {
 		System.out.println("[on Close]");
 		Platform.runLater(() -> {
 			dialog = new PlainDialog("�������� ������ ������ϴ�.", true);
@@ -235,7 +234,8 @@ public class Endpoint {
 	}
 
 	class PingPong extends Thread {
-		@Override public void run() {
+		@Override
+		public void run() {
 			while (true) {
 				try {
 					Thread.sleep(3 * 60 * 1000);

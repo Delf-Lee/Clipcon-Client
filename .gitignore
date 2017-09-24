@@ -58,3 +58,7 @@ hs_err_pid*
 
 # clipcon setup file
 *.exe
+
+# file store directory
+ClipconDownload/
+ClipconUpload/

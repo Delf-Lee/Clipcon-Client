@@ -26,11 +26,11 @@ public class MessageParser {
 
 	/**
 	 * @param message
-	 * 			Message object received from server
-	 * @return user 
-	 * 			User object converted from message
+	 *            Message object received from server
+	 * @return user User object converted from message
 	 */
 	public static User getUserAndGroupByMessage(Message message) {
+		System.out.println("   [delflog] getUserAndGroupByMessage");
 		User user = new User(message.get(Message.NAME));
 		Group group = new Group(message.get(Message.GROUP_PK));
 
@@ -48,16 +48,15 @@ public class MessageParser {
 		}
 
 		group.setUserList(userList);
+		System.out.println("   [delflog] setGroup");
 		user.setGroup(group);
-
 		return user;
 	}
 
 	/**
 	 * @param m
-	 * 			Message object received from server
-	 * @return Contents 
-	 * 			Contents object converted from message
+	 *            Message object received from server
+	 * @return Contents Contents object converted from message
 	 */
 	public static Contents getContentsbyMessage(Message m) {
 
@@ -69,19 +68,19 @@ public class MessageParser {
 		}
 
 		if (m.get("contentsType").equals(Contents.TYPE_MULTIPLE_FILE)) {
-			return new Contents(m.get("contentsType"), m.getLong("contentsSize"), m.get("contentsPKName"), m.get("uploadUserName"), m.get("uploadTime"), m.get("contentsValue"), image, m.get("multipleFileListInfo"));
+			return new Contents(m.get("contentsType"), m.getLong("contentsSize"), m.get("contentsPKName"), m.get("uploadUserName"),
+					m.get("uploadTime"), m.get("contentsValue"), image, m.get("multipleFileListInfo"));
+		} else {
+			return new Contents(m.get("contentsType"), m.getLong("contentsSize"), m.get("contentsPKName"), m.get("uploadUserName"),
+					m.get("uploadTime"), m.get("contentsValue"), image, null);
 		}
-		else {
-			return new Contents(m.get("contentsType"), m.getLong("contentsSize"), m.get("contentsPKName"), m.get("uploadUserName"), m.get("uploadTime"), m.get("contentsValue"), image, null);
-		}
-		
+
 	}
 
 	/**
 	 * @param imageString
-	 * 			The String that transformed the Image received from the server
-	 * @return InputStream
-	 * 			An InputStream for creating Javafx Image objects
+	 *            The String that transformed the Image received from the server
+	 * @return InputStream An InputStream for creating Javafx Image objects
 	 */
 	public static InputStream testDecodeMethod(String imageString) {
 		byte[] imageByte = Base64.decodeBase64(imageString);

@@ -100,6 +100,6 @@ public class Message {
 	
 	public final static String SERVERMSG = "server message";
 	public final static String HELLO = "hello";
-	public final static String DEVICE = "device";
-	public final static String SESSION = "sesion";
+	public final static String TERMINAL_DEVICE = "device";
+	public final static String SESSION = "sesion-id";
 }
